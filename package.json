@@ -18,7 +18,7 @@
   "author": "GitHub Inc.",
   "license": "ISC",
   "devDependencies": {
-    "@npmcli/template-oss": "^2.5.0",
+    "@npmcli/template-oss": "^3.5.0",
     "nock": "^13.2.2",
     "tap": "^15.1.6",
     "tar-stream": "^2.2.0"
