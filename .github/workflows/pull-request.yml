@@ -1,27 +1,48 @@
 # This file is automatically added by @npmcli/template-oss. Do not edit.
 
-name: Pull Request Linting
+name: Pull Request
 
 on:
   pull_request:
-    types: [opened, reopened, edited, synchronize]
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
 
 jobs:
-  check:
-    name: Check PR Title or Commits
+  commitlint:
+    name: Lint Commits
+    if: github.repository_owner == 'npm'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v2
+      - name: Setup Git User
+        run: |
+          git config --global user.email "npm-cli+bot@github.com"
+          git config --global user.name "npm CLI robot"
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: '16'
-      - name: Install deps
+          node-version: 18.x
+      - name: Install npm@latest
+        run: npm i --prefer-online --no-fund --no-audit -g npm@latest
+      - name: npm Version
+        run: npm -v
+      - name: Install Dependencies
+        run: npm i --ignore-scripts --no-audit --no-fund
+      - name: Run Commitlint on Commits
+        id: commit
+        continue-on-error: true
         run: |
-          npm i -D @commitlint/cli @commitlint/config-conventional
-      - name: Check commits OR PR title
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
+          npx --offline commitlint -V --from origin/${{ github.base_ref }} --to ${{ github.event.pull_request.head.sha }}
+      - name: Run Commitlint on PR Title
+        if: steps.commit.outcome == 'failure'
         run: |
-          npx commitlint -x @commitlint/config-conventional -V --from origin/main --to ${{ github.event.pull_request.head.sha }} || echo $PR_TITLE | npx commitlint -x @commitlint/config-conventional -V
+          echo ${{ github.event.pull_request.title }} | npx --offline commitlint -V

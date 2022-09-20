@@ -5,14 +5,12 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "tap",
-    "lint": "eslint '**/*.js'",
-    "postlint": "npm-template-check",
+    "lint": "eslint \"**/*.js\"",
+    "postlint": "template-oss-check",
     "lintfix": "npm run lint -- --fix",
-    "preversion": "npm test",
-    "postversion": "npm publish",
-    "prepublishOnly": "git push origin --follow-tags",
     "snap": "tap",
-    "posttest": "npm run lint"
+    "posttest": "npm run lint",
+    "template-oss-apply": "template-oss-apply --force"
   },
   "keywords": [],
   "author": "GitHub Inc.",
@@ -24,13 +22,24 @@
     "tar-stream": "^2.2.0"
   },
   "files": [
-    "bin",
-    "lib"
+    "bin/",
+    "lib/"
   ],
   "engines": {
-    "node": "^12.13.0 || ^14.15.0 || >=16"
+    "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
   },
   "templateOSS": {
-    "version": "2.5.0"
+    "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
+    "version": "4.3.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npm/nock-registry.git"
+  },
+  "tap": {
+    "nyc-arg": [
+      "--exclude",
+      "tap-snapshots/**"
+    ]
   }
 }
